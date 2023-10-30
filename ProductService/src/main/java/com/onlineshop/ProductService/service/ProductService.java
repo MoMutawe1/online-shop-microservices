@@ -10,4 +10,5 @@ public interface ProductService {
     String save(ProductRequest productRequest);
     ProductResponse getProductByProductId(String productId);
     List<ProductResponse> getAllProducts();
+    void reduceQuantity(String productId, long quantity);
 }

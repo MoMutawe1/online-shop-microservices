@@ -35,4 +35,10 @@ public class ProductController {
         String message = "Product with Id: " + ProductId + ", has been added.";
         return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
+
+    @PutMapping("/reduceQuantity/{id}")
+    public ResponseEntity<Void> reduceQuantity(@PathVariable("id") String productId, @RequestParam long quantity){
+        productService.reduceQuantity(productId, quantity);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

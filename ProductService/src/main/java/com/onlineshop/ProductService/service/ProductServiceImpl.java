@@ -8,7 +8,6 @@ import com.onlineshop.ProductService.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setId(UUID.randomUUID().toString());
         productRepository.save(productEntity);
 
-        log.info("Product with Id: " +productEntity.getId()+ ", has been created");
+        log.info("Product with Id: " +productEntity.getId()+ ", has been created.");
         return productEntity.getId();
     }
 
@@ -66,6 +65,26 @@ public class ProductServiceImpl implements ProductService {
                 return productResponse;
         }).collect(Collectors.toList());
         return products;
+    }
+
+    @Override
+    public void reduceQuantity(String productId, long quantity) {
+        log.info("Reduce quantity of {}, for product Id: {}.", quantity, productId);
+
+        ProductEntity product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductServiceCustomException(
+                        "Product with given Id not found.",
+                        "PRODUCT_NOT_FOUND"));
+
+        if(product.getQuantity() < quantity){
+            throw new ProductServiceCustomException(
+                    "Product does not have sufficient quantity.",
+                    "INSUFFICIENT_QUANTITY");
+        }
+
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
+        log.info("Product Quantity Updated Successfully.");
     }
 }
 
