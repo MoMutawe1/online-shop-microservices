@@ -24,6 +24,6 @@ public class OrderController {
         String orderId = orderService.placeOrder(order);
         log.info("Order Id: {}", orderId);
         String responseMsg = "Order with Id: " + orderId + ", has been placed.";
-        return new ResponseEntity<>(orderId, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseMsg, HttpStatus.CREATED);
     }
 }
