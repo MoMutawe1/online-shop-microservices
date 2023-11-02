@@ -13,5 +13,4 @@ public interface ProductService {
      ResponseEntity<Void> reduceQuantity(
              @PathVariable("id") String productId,
              @RequestParam long quantity);
-
 }
