@@ -1,13 +1,16 @@
 package com.onlineshop.OrderService.service;
 
 import com.onlineshop.OrderService.entity.OrderEntity;
+import com.onlineshop.OrderService.exception.CustomException;
 import com.onlineshop.OrderService.external.client.PaymentService;
 import com.onlineshop.OrderService.external.client.ProductService;
 import com.onlineshop.OrderService.external.request.PaymentRequest;
 import com.onlineshop.OrderService.model.OrderRequest;
+import com.onlineshop.OrderService.model.OrderResponse;
 import com.onlineshop.OrderService.repository.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -71,5 +74,19 @@ public class OrderServiceImpl implements OrderService{
 
         log.info("Order Places Successfully with Order Id: {}.", orderEntity.getOrderId());
         return orderEntity.getOrderId();
+    }
+
+    @Override
+    public OrderResponse getOrderDetails(String orderId) {
+        log.info("Get Order details by Order Id: {}", orderId);
+        OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new CustomException("Order not found for Order Id: " + orderId, "NOT_FOUND",HttpStatus.NOT_FOUND.value()));
+        OrderResponse orderResponse =
+                OrderResponse.builder()
+                        .orderId(orderEntity.getOrderId())
+                        .amount(orderEntity.getAmount())
+                        .orderDate(orderEntity.getOrderDate())
+                        .orderStatus(orderEntity.getOrderStatus())
+                        .build();
+        return orderResponse;
     }
 }
